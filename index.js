@@ -13,8 +13,6 @@ app.use(express.json());
 
 
 
-
-
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.f7wnwq6.mongodb.net/?retryWrites=true&w=majority`;
 console.log(uri);
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
@@ -24,7 +22,8 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
 async function run() {
     try {
         const phoneCategoryCollection = client.db('phoneService').collection('phoneCategory');
-        const productsCollection = client.db('phoneService').collection('products')
+        const productsCollection = client.db('phoneService').collection('products');
+        const bookingsCollection = client.db('phoneService').collection('bookings')
 
         // all category api
         app.get('/phoneCategory', async (req, res) => {
@@ -42,7 +41,15 @@ async function run() {
             res.send(result);
         })
 
-        app.get('/')
+        // booking api 
+
+        app.post('/bookings', async(req, res) => {
+            const booking = req.body;
+            console.log(booking)
+            const result = await bookingsCollection.insertOne(booking);
+            res.send(result);
+        })
+
     }
     finally {
 
