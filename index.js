@@ -42,7 +42,15 @@ async function run() {
             res.send(result);
         })
 
-        // booking api 
+        // get all bookings
+
+        app.get('/bookings', async(req, res) => {
+            const query = {};
+            const booking = await bookingsCollection.find(query).toArray();
+            res.send(booking);
+        })
+
+        // booking post database 
 
         app.post('/bookings', async (req, res) => {
             const booking = req.body;
@@ -57,14 +65,27 @@ async function run() {
             const user = await usersCollection.find(query).toArray();
             res.send(user)
         });
-
+        
+        // all buyers data loaded
         app.get('/sellers', async(req, res) => {
             const query = {
-                role: 'seller',
-            }
+                role: 'seller'
+            };
             const allSeller = await usersCollection.find(query).toArray();
             res.send(allSeller);
         });
+
+        app.get('/buyers', async(req, res) => {
+            const query = {
+                role: 'buyer'
+            };
+            const allBuyer = await usersCollection.find(query).toArray();
+            res.send(allBuyer);
+        });
+
+        // all phone category name api
+
+        
 
         // app.get('/users/role', async (req, res) => {
         //     const seller = req.params.role;
