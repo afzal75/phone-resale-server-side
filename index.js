@@ -27,18 +27,33 @@ async function run() {
         const usersCollection = client.db('phoneService').collection('users');
 
         // all category api
+
         app.get('/phoneCategory', async (req, res) => {
             const query = {};
             const categories = await phoneCategoryCollection.find(query).toArray();
             res.send(categories)
         });
 
-        // product api loaded
-
+        // specific category wise product loaded api
         app.get('/products/:id', async (req, res) => {
             const id = req.params.id;
-            const query = { categoryId: id };
+            const query = { brandName: id };
             const result = await productsCollection.find(query).toArray();
+            res.send(result);
+        });
+
+        // all product api loaded
+
+        app.get('/products', async(req, res) => {
+            const query = {};
+            const product = await productsCollection.find(query).toArray();
+            res.send(product);
+        })
+
+        // product post api
+        app.post('/products', async(req, res) => {
+            const product = req.body;
+            const result = await productsCollection.insertOne(product);
             res.send(result);
         })
 
@@ -86,7 +101,7 @@ async function run() {
         // all phone category name api
         app.get('/categoryItem', async(req, res) => {
             const query  = {};
-            const result = await phoneCategoryCollection.find(query).project({title: 1}).toArray();
+            const result = await phoneCategoryCollection.find(query).project({brandName: 1}).toArray();
             res.send(result);
         })
 
