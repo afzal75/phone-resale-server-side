@@ -34,7 +34,7 @@ async function run() {
         });
 
         // product api loaded
-        
+
         app.get('/products/:id', async (req, res) => {
             const id = req.params.id;
             const query = { categoryId: id };
@@ -44,28 +44,70 @@ async function run() {
 
         // booking api 
 
-        app.post('/bookings', async(req, res) => {
+        app.post('/bookings', async (req, res) => {
             const booking = req.body;
             console.log(booking)
             const result = await bookingsCollection.insertOne(booking);
             res.send(result);
         });
 
-        
+        // all user loaded api
+        app.get('/users', async (req, res) => {
+            const query = {};
+            const user = await usersCollection.find(query).toArray();
+            res.send(user)
+        });
+
+        app.get('/sellers', async(req, res) => {
+            const query = {
+                role: 'seller',
+            }
+            const allSeller = await usersCollection.find(query).toArray();
+            res.send(allSeller);
+        });
+
+        // app.get('/users/role', async (req, res) => {
+        //     const seller = req.params.role;
+        //     console.log(seller)
+        //     const query = { role : 'seller' }
+        //     const user = await usersCollection.find(query).toArray();
+        //     console.log(user)
+        // })
+        // app.get('/users/:buyer', async (req, res) => {
+        //     const buyer = req.params.role;
+        //     console.log(buyer)
+        //     const query = { role : 'buyer' }
+        //     const user = await usersCollection.find(query).toArray();
+        //     console.log(user)
+        // })
+
+        // app.get('/users/seller/:seller', async (req, res) => {
+        //     const seller = req.params.seller;
+        //     console.log(seller)
+        //     const query = { role: seller };
+        //     const user = await usersCollection.find(query).toArray()
+        //     res.send(user)
+        // });
+
+        app.post('/users', async (req, res) => {
+            const user = req.body;
+            const result = await usersCollection.insertOne(user);
+            res.send(result);
+        })
 
         // user put to db
 
-        app.put('/user/:email', async(req, res) => {
+        app.put('/user/:email', async (req, res) => {
             const email = req.params.email;
             console.log(email);
-            const filter = {email: email};
-            const options = {upsert: true};
-            const updateDoc = {
+            const filter = { email: email };
+            const options = { upsert: true };
+            const updatedDoc = {
                 $set: {
                     role: 'buyer'
                 }
             }
-            const result = await usersCollection.updateOne(filter, updateDoc, options);
+            const result = await usersCollection.updateOne(filter, updatedDoc, options);
             res.send({
                 status: "success",
                 message: "user added to db",
@@ -75,7 +117,7 @@ async function run() {
 
         // user api created
 
-        app.get('/users/:email', async(req, res) => {
+        app.get('/users/:email', async (req, res) => {
             const email = req.params.email;
             const user = await usersCollection.findOne(email)
             res.send(user)
