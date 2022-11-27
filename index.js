@@ -84,8 +84,11 @@ async function run() {
         });
 
         // all phone category name api
-
-        
+        app.get('/categoryItem', async(req, res) => {
+            const query  = {};
+            const result = await phoneCategoryCollection.find(query).project({title: 1}).toArray();
+            res.send(result);
+        })
 
         // app.get('/users/role', async (req, res) => {
         //     const seller = req.params.role;
