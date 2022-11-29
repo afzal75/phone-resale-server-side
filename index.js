@@ -18,7 +18,6 @@ console.log(uri);
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
 
 
-
 async function run() {
     try {
         const phoneCategoryCollection = client.db('phoneService').collection('phoneCategory');
@@ -56,6 +55,15 @@ async function run() {
             const result = await productsCollection.insertOne(product);
             res.send(result);
         })
+
+        // product deleted my product page 
+
+        app.delete('/products/:id', async (req, res) => {
+            const id = req.params.id;
+            const filter = { _id: ObjectId(id) };
+            const result = await productsCollection.deleteOne(filter);
+            res.send(result);
+        });
 
         // get all bookings
 
@@ -107,6 +115,20 @@ async function run() {
             res.send({ isBuyer: user?.role === 'buyer' });
         });
 
+        // seller verified api
+
+        app.put('/users/seller/:id', async (req, res) => {
+            const id = req.params.id;
+            const filter = { _id: ObjectId(id) };
+            const options = { upsert: true };
+            const updatedDoc = {
+                $set: {
+                    verify: 'verified'
+                }
+            }
+            const result = await usersCollection.updateOne(filter, updatedDoc, options);
+            res.send(result);
+        })
 
         // all user loaded
 
@@ -145,9 +167,9 @@ async function run() {
 
         // buyer deleted api
 
-        app.delete('/buyer/:id', async(req, res) => {
+        app.delete('/buyer/:id', async (req, res) => {
             const id = req.params.id;
-            const filter = {_id: ObjectId(id)};
+            const filter = { _id: ObjectId(id) };
             const result = await usersCollection.deleteOne(filter);
             res.send(result);
         })
