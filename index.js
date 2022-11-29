@@ -44,14 +44,14 @@ async function run() {
 
         // all product api loaded
 
-        app.get('/products', async(req, res) => {
+        app.get('/products', async (req, res) => {
             const query = {};
             const product = await productsCollection.find(query).toArray();
             res.send(product);
         })
 
         // product post api
-        app.post('/products', async(req, res) => {
+        app.post('/products', async (req, res) => {
             const product = req.body;
             const result = await productsCollection.insertOne(product);
             res.send(result);
@@ -59,7 +59,7 @@ async function run() {
 
         // get all bookings
 
-        app.get('/bookings', async(req, res) => {
+        app.get('/bookings', async (req, res) => {
             const query = {};
             const booking = await bookingsCollection.find(query).toArray();
             res.send(booking);
@@ -80,9 +80,44 @@ async function run() {
             const user = await usersCollection.find(query).toArray();
             res.send(user)
         });
-        
-        // all buyers data loaded
-        app.get('/sellers', async(req, res) => {
+
+        // admin data loaded
+
+        app.get('/users/admin/:email', async (req, res) => {
+            const email = req.params.email;
+            const query = { email }
+            const user = await usersCollection.findOne(query);
+            res.send({ isAdmin: user?.role === 'admin' });
+        });
+
+        // specific seller route check
+
+        app.get('/users/seller/:email', async (req, res) => {
+            const email = req.params.email;
+            const query = { email }
+            const user = await usersCollection.findOne(query);
+            res.send({ isSeller: user?.role === 'seller' });
+        });
+
+        // specific buyer route check
+        app.get('/users/buyer/:email', async (req, res) => {
+            const email = req.params.email;
+            const query = { email }
+            const user = await usersCollection.findOne(query);
+            res.send({ isBuyer: user?.role === 'buyer' });
+        });
+
+
+        // all user loaded
+
+        app.get('/alluser', async(req, res) => {
+            const query = {};
+            const user = await usersCollection.find(query).toArray();
+            res.send(user)
+        })
+
+        // all sellers data loaded
+        app.get('/sellers', async (req, res) => {
             const query = {
                 role: 'seller'
             };
@@ -90,7 +125,8 @@ async function run() {
             res.send(allSeller);
         });
 
-        app.get('/buyers', async(req, res) => {
+        // all buyers data loaded
+        app.get('/buyers', async (req, res) => {
             const query = {
                 role: 'buyer'
             };
@@ -99,34 +135,11 @@ async function run() {
         });
 
         // all phone category name api
-        app.get('/categoryItem', async(req, res) => {
-            const query  = {};
-            const result = await phoneCategoryCollection.find(query).project({brandName: 1}).toArray();
+        app.get('/categoryItem', async (req, res) => {
+            const query = {};
+            const result = await phoneCategoryCollection.find(query).project({ brandName: 1 }).toArray();
             res.send(result);
         })
-
-        // app.get('/users/role', async (req, res) => {
-        //     const seller = req.params.role;
-        //     console.log(seller)
-        //     const query = { role : 'seller' }
-        //     const user = await usersCollection.find(query).toArray();
-        //     console.log(user)
-        // })
-        // app.get('/users/:buyer', async (req, res) => {
-        //     const buyer = req.params.role;
-        //     console.log(buyer)
-        //     const query = { role : 'buyer' }
-        //     const user = await usersCollection.find(query).toArray();
-        //     console.log(user)
-        // })
-
-        // app.get('/users/seller/:seller', async (req, res) => {
-        //     const seller = req.params.seller;
-        //     console.log(seller)
-        //     const query = { role: seller };
-        //     const user = await usersCollection.find(query).toArray()
-        //     res.send(user)
-        // });
 
         app.post('/users', async (req, res) => {
             const user = req.body;
@@ -161,7 +174,6 @@ async function run() {
             const user = await usersCollection.findOne(email)
             res.send(user)
         })
-
     }
     finally {
 
