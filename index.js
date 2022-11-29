@@ -1,6 +1,6 @@
 const express = require('express');
 const cors = require('cors');
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const port = process.env.PORT || 5000;
 require('dotenv').config();
 
@@ -110,7 +110,7 @@ async function run() {
 
         // all user loaded
 
-        app.get('/alluser', async(req, res) => {
+        app.get('/alluser', async (req, res) => {
             const query = {};
             const user = await usersCollection.find(query).toArray();
             res.send(user)
@@ -124,6 +124,15 @@ async function run() {
             const allSeller = await usersCollection.find(query).toArray();
             res.send(allSeller);
         });
+
+        // seller deleted
+
+        app.delete('/seller/:id', async (req, res) => {
+            const id = req.params.id;
+            const filter = { _id: ObjectId(id) };
+            const result = await usersCollection.deleteOne(filter);
+            res.send(result);
+        })
 
         // all buyers data loaded
         app.get('/buyers', async (req, res) => {
