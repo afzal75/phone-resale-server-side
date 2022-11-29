@@ -125,14 +125,14 @@ async function run() {
             res.send(allSeller);
         });
 
-        // seller deleted
+        // seller deleted api
 
         app.delete('/seller/:id', async (req, res) => {
             const id = req.params.id;
             const filter = { _id: ObjectId(id) };
             const result = await usersCollection.deleteOne(filter);
             res.send(result);
-        })
+        });
 
         // all buyers data loaded
         app.get('/buyers', async (req, res) => {
@@ -142,6 +142,15 @@ async function run() {
             const allBuyer = await usersCollection.find(query).toArray();
             res.send(allBuyer);
         });
+
+        // buyer deleted api
+
+        app.delete('/buyer/:id', async(req, res) => {
+            const id = req.params.id;
+            const filter = {_id: ObjectId(id)};
+            const result = await usersCollection.deleteOne(filter);
+            res.send(result);
+        })
 
         // all phone category name api
         app.get('/categoryItem', async (req, res) => {
